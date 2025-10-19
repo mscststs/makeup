@@ -1,0 +1,37 @@
+{
+  "name": "makeup",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A minimal React + Vite project with React Router and Tailwind CSS",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "vite",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@ai-sdk/openai-compatible": "^1.0.22",
+    "@swc/wasm-web": "^1.13.20",
+    "ai": "^5.0.76",
+    "clsx": "^2.1.1",
+    "js-yaml": "^4.1.0",
+    "lodash": "^4.17.21",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.16.0",
+    "vite-plugin-externals": "^0.6.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.0.0",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.24",
+    "tailwindcss": "^3.4.8",
+    "vite": "^5.0.0"
+  }
+}
