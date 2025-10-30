@@ -1,17 +1,15 @@
-import React from 'react'
-
-import CodeRender from '../engine/CodeRender.jsx'
-import { askKIMI } from '../../utils/ai.js';
+import React from "react";
+import { askKIMI } from "../../utils/ai.js";
+import CodeRender from "../engine/CodeRender.jsx";
 
 export default function SmartRender({ prompt, ...args }) {
-
-  const [code, setCode] = React.useState('');
+  const [code, setCode] = React.useState("");
 
   React.useEffect(() => {
     let cancelled = false;
     async function fetchCode() {
       // 同一个 prompt 不重复请求，使用 sessionStorage 保存
-      const cachedCode = sessionStorage.getItem(`SMART_`+prompt);
+      const cachedCode = sessionStorage.getItem(`SMART_${prompt}`);
       if (cachedCode) {
         setCode(cachedCode);
         return;
@@ -50,21 +48,23 @@ export default function SmartRender({ prompt, ...args }) {
       ## Props 说明:
       
       该组件需要接收以下 props，以下列出参数和对应的类型:
-      ${Object.entries(args).map(([key, value]) => `- ${key}: ${typeof value}`).join('\n')}
+      ${Object.entries(args)
+        .map(([key, value]) => `- ${key}: ${typeof value}`)
+        .join("\n")}
 
       除此之外，组件始终接受 className 和 style 这两个可能为空的 props。
 
       -----
 
       不需要任何多余的描述和 markdown 标记，你的回复 以 import React from 'react' 开头，并且以组件代码结尾。
-      `
+      `;
 
       // 触发前，先把组件代码置空，显示加载中
-      setCode('');
+      setCode("");
       const code = await askKIMI(targetPrompt);
 
       if (!cancelled) {
-        sessionStorage.setItem(`SMART_`+prompt, code);
+        sessionStorage.setItem(`SMART_${prompt}`, code);
         setCode(code);
       }
     }
@@ -76,20 +76,9 @@ export default function SmartRender({ prompt, ...args }) {
     };
   }, [prompt]);
 
-  // 右键单击时 copy 源代码
-  const handleRightClick=async (e) => {
-    // 阻止默认右键菜单
-    e.preventDefault();
-    if(!code){
-      return false;
-    }
-    await navigator.clipboard.writeText(code);
-    return false;
-  }
-
   return (
     <>
       {code ? <CodeRender code={code} args={args} /> : <div>AI 构思中...</div>}
     </>
   );
-} 
+}

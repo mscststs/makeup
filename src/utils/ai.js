@@ -1,9 +1,8 @@
-import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
-import { generateText } from 'ai';
-
+import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
+import { generateText } from "ai";
 
 const provider = createOpenAICompatible({
-  name: 'Custom',
+  name: "Custom",
   apiKey: import.meta.env.VITE_AI_SKEY,
   baseURL: import.meta.env.VITE_AI_ENDPOINT,
 });
@@ -20,7 +19,7 @@ export async function askKIMI(prompt) {
   ongoingRequest = (async () => {
     try {
       const response = await generateText({
-        model: provider( import.meta.env.VITE_MODEL_NAME),
+        model: provider(import.meta.env.VITE_MODEL_NAME),
         prompt,
       });
       return response;

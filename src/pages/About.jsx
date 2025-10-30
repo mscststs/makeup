@@ -1,13 +1,12 @@
-import React from 'react'
-import { askKIMI } from '../utils/ai'
+import React from "react";
+import { askKIMI } from "../utils/ai";
 
 export default function About() {
+  const [text, setText] = React.useState("");
+  const [answer, setAnswer] = React.useState("");
 
-  const [text, setText] = React.useState('')
-  const [answer, setAnswer] = React.useState('')
-  
   return (
-    <div className='flex flex-auto flex-col'>
+    <div className="flex flex-auto flex-col">
       <textarea
         className="w-full h-48 p-2 border border-gray-300 rounded mb-4 font-mono text-sm"
         value={text}
@@ -21,6 +20,7 @@ export default function About() {
 
           setAnswer(response);
         }}
+        type="button"
       >
         Ask KIMI
       </button>
@@ -29,7 +29,6 @@ export default function About() {
         <h3 className="font-semibold mb-2">Answer:</h3>
         <pre className="whitespace-pre-wrap">{answer}</pre>
       </div>
-
     </div>
-  )
+  );
 }

@@ -1,9 +1,8 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom/client';
-import * as ReactRouterDom from 'react-router-dom';
-import * as Clsx from 'clsx';
-import * as lodash from 'lodash';
-
+import * as Clsx from "clsx";
+import * as lodash from "lodash";
+import * as React from "react";
+import * as ReactDOM from "react-dom/client";
+import * as ReactRouterDom from "react-router-dom";
 
 /**
  * 将模块挂载到 window，自动处理“有/无默认导出”的情况
@@ -21,7 +20,7 @@ function mountModuleToWindow(moduleName, module) {
 
   // 1. 处理具名导出：复制模块的所有自有属性（排除原型链属性）
   const moduleExports = {};
-  Object.keys(module).forEach(key => {
+  Object.keys(module).forEach((key) => {
     moduleExports[key] = module[key];
   });
 
@@ -30,7 +29,7 @@ function mountModuleToWindow(moduleName, module) {
   if (module.default === undefined) {
     // 特殊情况：如果模块本身就是默认导出（非 ES 模块格式），比如 React 的 UMD 包
     // 此时 module 就是默认导出对象，需要手动将其作为 default
-    if (typeof module === 'object' && !Object.prototype.hasOwnProperty.call(module, 'default')) {
+    if (typeof module === "object" && !Object.hasOwn(module, "default")) {
       moduleExports.default = module;
     } else {
       // 确实无默认导出，显式赋值为 undefined
@@ -45,8 +44,8 @@ function mountModuleToWindow(moduleName, module) {
   // console.log(`模块 ${moduleName} 已挂载到 window（包含 default: ${moduleExports.default !== undefined}）`);
 }
 
-mountModuleToWindow('React', React);
-mountModuleToWindow('ReactDOM', ReactDOM);
-mountModuleToWindow('ReactRouterDom', ReactRouterDom);
-mountModuleToWindow('Clsx', Clsx);
-mountModuleToWindow('lodash', lodash);
+mountModuleToWindow("React", React);
+mountModuleToWindow("ReactDOM", ReactDOM);
+mountModuleToWindow("ReactRouterDom", ReactRouterDom);
+mountModuleToWindow("Clsx", Clsx);
+mountModuleToWindow("lodash", lodash);

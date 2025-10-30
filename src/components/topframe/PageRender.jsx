@@ -1,25 +1,20 @@
-import React, {useMemo} from "react";
-
+import { useMemo } from "react";
+import { toYAML } from "../../utils/yaml";
 import { useRuntime } from "./Context";
 import PromptRender from "./PromptRender";
-import { toYAML } from "../../utils/yaml";
 
 const PageRender = ({
   /**
    * 页面名称
    */
-  pageName
+  pageName,
 }) => {
   const { getPageNode, getTheme } = useRuntime();
 
   const pageNode = getPageNode(pageName);
 
-  if (!pageNode) {
-    return <div>页面未找到: {pageName}</div>;
-  }
-
   const childrensPrompt = useMemo(() => {
-    if(!pageNode.childrens || pageNode.childrens.length === 0) return ``;
+    if (!pageNode.childrens || pageNode.childrens.length === 0) return ``;
     return `
 ## 子组件:
 
@@ -29,16 +24,16 @@ ${toYAML(pageNode.childrens || [])}
 渲染子组件的方式：
 在顶部 import {ComponentRender} from '@mscststs/top-frame' ，然后在合适的位置使用：
 
-<ComponentRender path="${pageName}/${'{child组件名称}'}" />
+<ComponentRender path="${pageName}/${"{child组件名称}"}" />
 
 当前在一个分布式低代码环境，每层组件只需要实现当层的功能。
 - 你只需要为子组件预留位置，而不需要实现子组件的布局。
 - 必须使用 ComponentRender 来渲染对应的子组件。
 - 可以给子组件传递合理的 Props 以处理循环数据或者事件，将其当作是常规组件一样来使用。
-      `
+      `;
   }, [pageNode]);
 
-  const targetPrompt = useMemo(()=>{
+  const targetPrompt = useMemo(() => {
     return `
 ## 角色，你正在一个低代码页面中，你的任务是根据用户的描述生成一个 React 组件代码。
 
@@ -83,12 +78,14 @@ ${pageNode.prompt}
 
 
 不需要任何多余的描述和 markdown 标记，你的回复 以 import React from 'react' 开头，并且以组件代码结尾。
-    `
+    `;
   }, [pageNode]);
 
-  return (
-    <PromptRender path={pageName} prompt={targetPrompt} />
-  );
-}
+  if (!pageNode) {
+    return <div>页面未找到: {pageName}</div>;
+  }
+
+  return <PromptRender path={pageName} prompt={targetPrompt} />;
+};
 
 export default PageRender;

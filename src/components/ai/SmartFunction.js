@@ -1,11 +1,10 @@
 import { askKIMI } from "../../utils/ai";
-import { compileCode } from '../../utils/compileCode'
+import { compileCode } from "../../utils/compileCode";
 
-
-async function getCode(prompt){
-  if(sessionStorage.getItem(`SMART_FN_`+prompt)){
-    return sessionStorage.getItem(`SMART_FN_`+prompt);
-  }else{
+async function getCode(prompt) {
+  if (sessionStorage.getItem(`SMART_FN_${prompt}`)) {
+    return sessionStorage.getItem(`SMART_FN_${prompt}`);
+  } else {
     const targetPrompt = `
     ## 角色，你是一个智能函数生成器，你的任务是根据用户的描述生成一个 JavaScript 函数代码。
 
@@ -32,21 +31,21 @@ async function getCode(prompt){
     `;
 
     const code = await askKIMI(targetPrompt);
-    sessionStorage.setItem(`SMART_FN_`+prompt, code);
+    sessionStorage.setItem(`SMART_FN_${prompt}`, code);
     return code;
   }
 }
 
-export default function SmartFunction (prompt) {
-  return async function(...args) {
-    const code =  await getCode(prompt);
+export default function SmartFunction(prompt) {
+  return async (...args) => {
+    const code = await getCode(prompt);
     const compiled = await compileCode(code);
-    const blob = new Blob([compiled], { type: 'application/javascript' })
+    const blob = new Blob([compiled], { type: "application/javascript" });
     const url = URL.createObjectURL(blob);
     const fn = await import(/* @vite-ignore */ url);
     URL.revokeObjectURL(url);
 
-    console.log(fn.default)
+    console.log(fn.default);
     return fn.default(...args);
-  }
+  };
 }

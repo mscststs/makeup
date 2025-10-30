@@ -9,7 +9,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "start": "vite",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "npx @biomejs/biome format --write ./src"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +29,7 @@
     "vite-plugin-externals": "^0.6.2"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.3.2",
     "@vitejs/plugin-react": "^4.0.0",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.24",

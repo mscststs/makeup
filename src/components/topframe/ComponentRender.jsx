@@ -1,37 +1,35 @@
-import React, {useMemo} from "react";
-
+import { useMemo } from "react";
+import { toYAML } from "../../utils/yaml";
 import { useRuntime } from "./Context";
 import PromptRender from "./PromptRender";
-import { toYAML } from "../../utils/yaml";
 
 const ComponentRender = ({
   /**
    * 页面名称
    */
-  path
+  path,
 }) => {
-
   const { getTheme, getPageNode, getCode } = useRuntime();
 
   const pageNode = getPageNode(path);
 
-  const parentPrompt = useMemo(()=>{
-    const parentPath = path.split("/").slice(0,-1).join("/");
-    console.log(parentPath,"parentPath",path)
+  const parentPrompt = useMemo(() => {
+    const parentPath = path.split("/").slice(0, -1).join("/");
+    console.log(parentPath, "parentPath", path);
     const parentCode = getCode(parentPath);
-    console.log(parentCode)
-    
+    console.log(parentCode);
+
     return `
 
 ## 父组件:
 你可以参考父组件代码，以更好地实现你的功能
 
 ${parentCode}
-`
+`;
   }, [path]);
 
   const childrensPrompt = useMemo(() => {
-    if(!pageNode.childrens || pageNode.childrens.length === 0) return ``;
+    if (!pageNode.childrens || pageNode.childrens.length === 0) return ``;
     return `
 ## 子组件:
 
@@ -41,18 +39,18 @@ ${toYAML(pageNode.childrens || [])}
 渲染子组件的方式：
 在顶部 import {ComponentRender} from '@mscststs/top-frame' ，然后在合适的位置使用：
 
-<ComponentRender path="${path}/${'{child组件名称}'}" />
+<ComponentRender path="${path}/${"{child组件名称}"}" />
 
 当前在一个分布式低代码环境，每层组件只需要实现当层的功能。
 - 你只需要为子组件预留位置，而不需要实现子组件的布局。
 - 必须使用 ComponentRender 来渲染对应的子组件。
 - 可以给子组件传递合理的 Props 以处理循环数据或者事件，将其当作是常规组件一样来使用。
 
-      `
+      `;
   }, [pageNode]);
 
-  const targetPrompt = useMemo(()=>{
-      return `
+  const targetPrompt = useMemo(() => {
+    return `
 ## 角色，你正在一个低代码页面中，你的任务是根据用户的描述生成一个 React 组件代码。
 
 ## 约束：
@@ -98,11 +96,11 @@ ${pageNode.prompt}
 
 
 不需要任何多余的描述和 markdown 标记，你的回复 以 import React from 'react' 开头，并且以组件代码结尾。
-      `
-    }, [pageNode]);
-    console.log('prompt', targetPrompt);
+      `;
+  }, [pageNode]);
+  console.log("prompt", targetPrompt);
 
   return <PromptRender path={path} prompt={targetPrompt} />;
-}
+};
 
 export default ComponentRender;

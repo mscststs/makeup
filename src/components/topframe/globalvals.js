@@ -1,7 +1,7 @@
 import ComponentRender from "./ComponentRender";
 import PageRender from "./PageRender";
 
-window.TopFrame = {
+export default {
   PageRender,
   ComponentRender,
-}
+};

@@ -1,5 +1,4 @@
-import yamlParser from 'js-yaml';
-
+import yamlParser from "js-yaml";
 
 export function toJSON(yaml) {
   return yamlParser.load(yaml);

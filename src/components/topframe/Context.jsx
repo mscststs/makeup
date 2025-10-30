@@ -1,21 +1,25 @@
-import React, { useRef, createContext, useContext, useState, useMemo, useEffect } from 'react';
-import { toJSON } from '../../utils/yaml';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { toJSON } from "../../utils/yaml";
 
 const RuntimeContext = createContext();
 
-
 export const RuntimeProvider = ({ children, initialYAML }) => {
-  const [yaml, setYaml] = useState(initialYAML || '');
+  const [yaml, setYaml] = useState(initialYAML || "");
   const codeMap = useRef({});
 
-
   useEffect(() => {
-    if(yaml === initialYAML) return;
+    if (yaml === initialYAML) return;
 
     setYaml(initialYAML);
   }, [initialYAML]);
 
-  
   const dsl = useMemo(() => {
     try {
       return toJSON(yaml);
@@ -30,53 +34,54 @@ export const RuntimeProvider = ({ children, initialYAML }) => {
     const [pageName, ...paths] = nodePath.split("/");
     let target = dsl.pages ? dsl.pages[pageName] : null;
 
-    while(paths.length > 0 && target) {
+    while (paths.length > 0 && target) {
       const childName = paths.shift();
-      target = target.childrens ? target.childrens.find(child => child.name === childName) : null;
+      target = target.childrens
+        ? target.childrens.find((child) => child.name === childName)
+        : null;
     }
 
     return target;
-  }
+  };
 
-  const setCode = (path, code)=>{
+  const setCode = (path, code) => {
     codeMap.current[path] = code;
-  }
-  const getCode = (path)=>{
-    return codeMap.current[path]
-  }
+  };
+  const getCode = (path) => {
+    return codeMap.current[path];
+  };
 
   const getTheme = () => {
-    return  dsl?.global?.theme?.prompt ?? '';
-  }
+    return dsl?.global?.theme?.prompt ?? "";
+  };
 
-  const value = useMemo(() => ({
-    dsl,
-    yaml,
-    setYaml,
-    getTheme,
-    getPageNode,
-    setCode,
-    getCode
-  }), [dsl, yaml, setYaml, getPageNode, getTheme]);
+  const value = useMemo(
+    () => ({
+      dsl,
+      yaml,
+      setYaml,
+      getTheme,
+      getPageNode,
+      setCode,
+      getCode,
+    }),
+    [dsl, yaml, setYaml, getPageNode, getTheme],
+  );
 
-  if(!yaml){
+  if (!yaml) {
     return null;
   }
 
-
   return (
-    <RuntimeContext.Provider value={value}>
-      {children}
-    </RuntimeContext.Provider>
+    <RuntimeContext.Provider value={value}>{children}</RuntimeContext.Provider>
   );
-}
+};
 
-
-export const useRuntime = () =>{
+export const useRuntime = () => {
   const context = useContext(RuntimeContext);
   if (!context) {
     // 报错提示：必须在 ThemeProvider 内部使用
-    throw new Error('useTheme must be used within a ThemeProvider');
+    throw new Error("useTheme must be used within a ThemeProvider");
   }
   return context;
-}
+};

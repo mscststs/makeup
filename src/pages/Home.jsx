@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
-import SmartRender from '../components/ai/SmartRender';
-import Runtime from '../components/topframe/Runtime';
-import PageRender from '../components/topframe/PageRender';
-import { askKIMI } from '../utils/ai';
+import React from "react";
+import SmartRender from "../components/ai/SmartRender";
+import PageRender from "../components/topframe/PageRender";
+import Runtime from "../components/topframe/Runtime";
+import { askKIMI } from "../utils/ai";
 
 const defaultDSL = `
 version: "1.0"
@@ -31,7 +31,7 @@ pages:
       - name: "推荐搜索"
         prompt: "两列布局的推荐列表，字号较小，固定显示热搜词：1. React 2. Vue 3. Angular 4. Svelte 5. Next.js 6. Nuxt.js；每个热词点击后，拼接对应名称生成谷歌搜索链接 https://www.google.com/search?q={热词}，并在新标签页打开"
 
-`
+`;
 
 export default function Home() {
   const [yaml, setYaml] = React.useState(defaultDSL);
@@ -40,8 +40,7 @@ export default function Home() {
 
   const handleDSLSubmit = () => {
     setRenderDSL(yaml);
-  }
-
+  };
 
   const handleAIChat = async (message) => {
     const prompt = `
@@ -105,15 +104,15 @@ ${yaml ? yaml : "无"}
 ${message}
 
 你的修改应该充分考虑用户的意见，你的输出以 version: "1.0" 开始，并以完整的 yaml 内容结束。
-    `
+    `;
 
     const result = await askKIMI(prompt);
     console.log("result", result);
     setYaml(result);
-  }
+  };
 
   return (
-    <div className='flex-auto flex flex-row w-full gap-4 ' >
+    <div className="flex-auto flex flex-row w-full gap-4 ">
       <div className="left w-[400px] flex-none flex-col gap-4 flex">
         <SmartRender
           prompt="一个 textarea，实际是 yaml 编辑器,flex-auto，内部可以滚动，onChange 回调是 text"
@@ -122,10 +121,20 @@ ${message}
           placeholder="请输入 YAML 内容"
           value={yaml}
         />
-        <SmartRender className="flex-none" prompt={"一个标准按钮"} onClick={handleDSLSubmit} 
-          title="渲染" disabled={renderDSL === yaml}></SmartRender>
+        <SmartRender
+          className="flex-none"
+          prompt={"一个标准按钮"}
+          onClick={handleDSLSubmit}
+          title="渲染"
+          disabled={renderDSL === yaml}
+        ></SmartRender>
 
-        <SmartRender className="flex-none" prompt="一个input输入框，带一个提交按钮，点击提交后触发 onSubmit(val:string) 回调，并清空输入框" onSubmit={handleAIChat} placeholder="想让AI怎么改"></SmartRender>
+        <SmartRender
+          className="flex-none"
+          prompt="一个input输入框，带一个提交按钮，点击提交后触发 onSubmit(val:string) 回调，并清空输入框"
+          onSubmit={handleAIChat}
+          placeholder="想让AI怎么改"
+        ></SmartRender>
       </div>
       <div className="flex-auto border rounded p-2 overflow-auto flex flex-col">
         <Runtime yaml={renderDSL}>
