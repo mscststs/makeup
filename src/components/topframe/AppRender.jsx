@@ -4,7 +4,7 @@ import { useRuntime } from "./Context";
 import PromptRender from "./PromptRender";
 
 const AppRender = ()=>{
-  const { getPageNode, getTheme, dsl } = useRuntime();
+  const { dsl } = useRuntime();
 
   const prompt = useMemo(()=>{
     return `

@@ -1,3 +1,5 @@
+import React from "react";
+
 // ErrorBoundary to catch render-time errors in the lazy-loaded component
 class ErrorBoundary extends React.Component {
   constructor(props) {
