@@ -1,11 +1,18 @@
+import * as RadixUI from "@radix-ui/themes";
+import { Box, Button, Flex, TextArea, TextField } from "@radix-ui/themes";
+import * as clsx from "clsx";
+import lodash from "lodash";
+import * as LucideIcons from "lucide-react";
 import React from "react";
-import SmartRender from "../components/ai/SmartRender";
-import PageRender from "../components/topframe/PageRender";
+import ReactDOM from "react-dom/client";
+import * as ReactRouterDom from "react-router-dom";
+import AppRender from "../components/topframe/AppRender";
+import TopFrame from "../components/topframe/globalvals";
 import Runtime from "../components/topframe/Runtime";
 import { askKIMI } from "../utils/ai";
+import "@radix-ui/themes/styles.css";
 
-const defaultDSL = `
-version: "1.0"
+const defaultDSL = `version: "1.0"
 type: "topframe-app"
 
 metadata:
@@ -35,8 +42,8 @@ pages:
 
 export default function Home() {
   const [yaml, setYaml] = React.useState(defaultDSL);
-
   const [renderDSL, setRenderDSL] = React.useState(yaml);
+  const [aiInput, setAiInput] = React.useState("");
 
   const handleDSLSubmit = () => {
     setRenderDSL(yaml);
@@ -90,6 +97,9 @@ pages:
 - 组件应该根据功能和位置适当聚合，避免分拆过于细节
 - 如果是在修改 一个YAML，你应该尽可能全局地判断功能，并尽可能精确的完成修改任务
 
+## 细节
+你的站点技术栈是React + Tailwind + Radix UI，你不能使用任何外部接口或者第三方数据，只能使用基于浏览器的技术。
+
 
 ## 约束：
 - 禁止输出无关的内容
@@ -109,38 +119,81 @@ ${message}
     const result = await askKIMI(prompt);
     console.log("result", result);
     setYaml(result);
+    setAiInput("");
+  };
+
+  const handleAiInputChange = (e) => {
+    setAiInput(e.target.value);
+  };
+
+  const handleAiInputSubmit = () => {
+    if (aiInput.trim()) {
+      handleAIChat(aiInput);
+    }
   };
 
   return (
-    <div className="flex-auto flex flex-row w-full gap-4 ">
-      <div className="left w-[400px] flex-none flex-col gap-4 flex">
-        <SmartRender
-          prompt="一个 textarea，实际是 yaml 编辑器,flex-auto，内部可以滚动，onChange 回调是 text"
-          className="flex-auto w-full"
-          onChange={setYaml}
-          placeholder="请输入 YAML 内容"
-          value={yaml}
-        />
-        <SmartRender
-          className="flex-none"
-          prompt={"一个标准按钮"}
-          onClick={handleDSLSubmit}
-          title="渲染"
-          disabled={renderDSL === yaml}
-        ></SmartRender>
-
-        <SmartRender
-          className="flex-none"
-          prompt="一个input输入框，带一个提交按钮，点击提交后触发 onSubmit(val:string) 回调，并清空输入框"
-          onSubmit={handleAIChat}
-          placeholder="想让AI怎么改"
-        ></SmartRender>
-      </div>
-      <div className="flex-auto border rounded p-2 overflow-auto flex flex-col">
-        <Runtime yaml={renderDSL}>
-          <PageRender pageName="home" />
-        </Runtime>
-      </div>
-    </div>
+    <Flex width="100%" gap="4">
+      <Box width="50%" flexShrink="0">
+        <Flex direction="column" gap="4" height="100%">
+          <Box>
+            <Flex gap="2">
+              <TextField.Root
+                placeholder="想让AI怎么改"
+                value={aiInput}
+                onChange={handleAiInputChange}
+                style={{ flexGrow: 1 }}
+              />
+              <Button onClick={handleAiInputSubmit}>提交</Button>
+            </Flex>
+          </Box>
+          <TextArea
+            placeholder="请输入 YAML 内容"
+            value={yaml}
+            onChange={(e) => setYaml(e.target.value)}
+            style={{
+              flexGrow: 1,
+              width: "100%",
+              fontSize: "12px",
+              backgroundColor: "var(--gray-2)",
+            }}
+          />
+          <Box>
+            <Button onClick={handleDSLSubmit} disabled={renderDSL === yaml}>
+              渲染
+            </Button>
+          </Box>
+        </Flex>
+      </Box>
+      <Box
+        flexGrow="1"
+        style={{
+          border: "1px solid var(--gray-6)",
+          borderRadius: "var(--radius-2)",
+          padding: "var(--space-2)",
+          overflow: "auto",
+        }}
+      >
+        <Flex direction="column" className="h-full w-full flex flex-auto">
+          <Runtime
+            yaml={renderDSL}
+            engine={{
+              globalVals: {
+                react: React,
+                "react-dom/client": ReactDOM,
+                lodash: lodash,
+                clsx: clsx,
+                "react-router-dom": ReactRouterDom,
+                "@mscststs/top-frame": TopFrame,
+                "@radix-ui/themes": RadixUI,
+                "lucide-react": LucideIcons,
+              },
+            }}
+          >
+            <AppRender />
+          </Runtime>
+        </Flex>
+      </Box>
+    </Flex>
   );
 }

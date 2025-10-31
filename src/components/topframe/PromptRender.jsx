@@ -1,5 +1,6 @@
 import React from "react";
 import { askKIMI } from "../../utils/ai.js";
+import { codeClear } from "../../utils/textClear.js";
 import CodeRender from "../engine/CodeRender.jsx";
 import { useRuntime } from "./Context.jsx";
 
@@ -23,7 +24,7 @@ export default function SmartRender({ path, prompt, ...args }) {
 
       // 触发前，先把组件代码置空，显示加载中
       setCode("");
-      const code = await askKIMI(targetPrompt);
+      const code = codeClear(await askKIMI(targetPrompt));
 
       if (!cancelled) {
         sessionStorage.setItem(`TF_SMART_${prompt}`, code);

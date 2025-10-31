@@ -1,4 +1,5 @@
 import "./globalvals";
+import { CodeContainer } from "../engine";
 import { RuntimeProvider } from "./Context";
 
 const Runtime = ({
@@ -6,9 +7,17 @@ const Runtime = ({
    * DSL 内容
    */
   yaml,
+  engine = {},
   children,
 }) => {
-  return <RuntimeProvider initialYAML={yaml}>{children}</RuntimeProvider>;
+
+  const globalVals = engine.globalVals ?? {};
+
+  return (
+    <RuntimeProvider initialYAML={yaml}>
+      <CodeContainer globalVals={globalVals}>{children}</CodeContainer>
+    </RuntimeProvider>
+  );
 };
 
 export default Runtime;

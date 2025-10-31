@@ -28,8 +28,6 @@ export default function SmartRender({ prompt, ...args }) {
         其他依赖：
         - clsx
         - lodash
-        - dayjs
-        - dayjs/locale/zh-cn
         
       - 禁止在组件内添加使用说明和描述。
 

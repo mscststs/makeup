@@ -1,11 +1,6 @@
-import * as clsx from "clsx";
-import lodash from "lodash";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-// Globals
-import ReactDOM from "react-dom/client";
-import * as ReactRouterDom from "react-router-dom";
-import { compileCode, runTransformedCode } from "../../utils/compileCode";
-import TopFrame from "../topframe/globalvals";
+import { useCodeContext } from "./CodeContext";
+import { compileCode, runTransformedCode } from "./compileCode";
 import { ErrorBoundary } from "./ErrorBoundary";
 import { DefaultErrorFallback } from "./ErrorFallback";
 
@@ -23,9 +18,8 @@ export default function CodeRender({
   args = {},
 }) {
   const [moduleKey, setModuleKey] = useState(0);
-
   const newCode = useRef(null);
-
+  const { globalVals } = useCodeContext();
   // 编译错误状态（用于在 render 期间抛出以让 ErrorBoundary 捕获）
   const [compileError, setCompileError] = useState(null);
 
@@ -71,16 +65,8 @@ export default function CodeRender({
   // memoize Lazy component so it remounts when moduleKey changes
   const LazyComp = useMemo(() => {
     if (!newCode.current) return null;
-    // using @vite-ignore to allow dynamic blob import under Vite
     return React.lazy(async () => {
-      const exports = runTransformedCode(newCode.current, {
-        react: React,
-        "react-dom/client": ReactDOM,
-        lodash: lodash,
-        clsx: clsx,
-        "react-router-dom": ReactRouterDom,
-        "@mscststs/top-frame": TopFrame,
-      });
+      const exports = await runTransformedCode(newCode.current, globalVals);
       return exports;
     });
   }, [moduleKey]);

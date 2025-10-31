@@ -18,11 +18,13 @@
   "type": "module",
   "dependencies": {
     "@ai-sdk/openai-compatible": "^1.0.22",
+    "@radix-ui/themes": "^3.2.1",
     "@swc/wasm-web": "^1.13.20",
     "ai": "^5.0.76",
     "clsx": "^2.1.1",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
+    "lucide-react": "^0.552.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.16.0",

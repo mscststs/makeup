@@ -15,9 +15,7 @@ const ComponentRender = ({
 
   const parentPrompt = useMemo(() => {
     const parentPath = path.split("/").slice(0, -1).join("/");
-    console.log(parentPath, "parentPath", path);
     const parentCode = getCode(parentPath);
-    console.log(parentCode);
 
     return `
 
@@ -98,7 +96,6 @@ ${pageNode.prompt}
 不需要任何多余的描述和 markdown 标记，你的回复 以 import React from 'react' 开头，并且以组件代码结尾。
       `;
   }, [pageNode]);
-  console.log("prompt", targetPrompt);
 
   return <PromptRender path={path} prompt={targetPrompt} />;
 };

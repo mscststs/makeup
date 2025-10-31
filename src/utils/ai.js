@@ -21,6 +21,8 @@ export async function askKIMI(prompt) {
       const response = await generateText({
         model: provider(import.meta.env.VITE_MODEL_NAME),
         prompt,
+        maxTokens: 204800,
+        temperature: 0.1,
       });
       return response;
     } finally {
